@@ -14,7 +14,8 @@ public class PlayerController : MonoBehaviour
     public Animator anim;
     public GameObject bulletTofire;
     public Transform firepoint;
-
+    public float timebetweenshots;
+    private float shotcounter;
 
 
     // Start is called before the first frame update
@@ -47,6 +48,19 @@ public class PlayerController : MonoBehaviour
             stafarm.localScale = Vector3.one;
         }
 
+
+
+        //unstable rotation
+
+
+        /*
+        Vector2 offset = theCam.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        float angle = Mathf.Atan2(offset.y ,offset.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        stafarm.rotation = Quaternion.Slerp(transform.rotation, rotation, rotation_speed * Time.deltaTime);
+        */
+
+
         // fix rotation of weapon to follow mouse position 
         // rotation gun arm
         Vector2 offset = new Vector2(mousePos.x - screenPoint.x, mousePos.y - screenPoint.y);
@@ -55,6 +69,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)){
             Instantiate(bulletTofire, firepoint.position, firepoint.rotation);
+            shotcounter = timebetweenshots;
         }
 
 
@@ -66,6 +81,14 @@ public class PlayerController : MonoBehaviour
         }
         else{
             anim.SetBool("isMoving", false);
+        }
+        if(Input.GetMouseButton(0)){
+            shotcounter -= Time.deltaTime; 
+
+            if (shotcounter <= 0){
+                 Instantiate(bulletTofire, firepoint.position, firepoint.rotation);
+                 shotcounter = timebetweenshots;
+            }
         }
     }
 }
